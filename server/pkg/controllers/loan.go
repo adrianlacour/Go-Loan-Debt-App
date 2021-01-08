@@ -40,3 +40,16 @@ func FindLoans(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": loans})
 }
+
+// FindLoan connects to the database and retrieves a single loan, by id
+// Route: GET /loans/:id
+func FindLoan(c *gin.Context) { // Get model if exist
+	var loan models.Loan
+
+	if err := models.DB.Where("id = ?", c.Param("id")).First(&loan).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": loan})
+}

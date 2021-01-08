@@ -11,8 +11,9 @@ func main() {
 
 	models.ConnectDatabase()
 
-	r.POST("/loans", controllers.CreateLoan)
 	r.GET("/loans", controllers.FindLoans)
+	r.GET("/loans/:id", controllers.FindLoan)
+	r.POST("/loans", controllers.CreateLoan)
 
 	r.Run()
 }
