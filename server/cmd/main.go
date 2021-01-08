@@ -1,17 +1,21 @@
 package main
 
 import (
-	"net/http"
-
+	"../pkg/controllers"
+	"../pkg/models"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "hello world"})
-	})
+	models.ConnectDatabase()
+
+	r.GET("/loans", controllers.FindLoans)
+	r.GET("/loans/:id", controllers.FindLoan)
+	r.POST("/loans", controllers.CreateLoan)
+	r.PUT("/loans/:id", controllers.UpdateLoan)
+	r.DELETE("/loans/:id", controllers.DeleteLoan)
 
 	r.Run()
 }

@@ -3,7 +3,8 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 // DB variable represents our connection to the database
@@ -11,13 +12,13 @@ var DB *gorm.DB
 
 // ConnectDatabase opens a sqllite3 database connection, and migrates the created models
 func ConnectDatabase() {
-	database, err := gorm.Open("sqlite3", "loans.db")
+	db, err := gorm.Open(sqlite.Open("loans.db"), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
 
-	database.AutoMigrate(&Loan{})
+	db.AutoMigrate(&Loan{})
 
-	DB = database
+	DB = db
 }
