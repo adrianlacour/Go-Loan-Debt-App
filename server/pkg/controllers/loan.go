@@ -81,3 +81,17 @@ func UpdateLoan(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": loan})
 }
+
+// DeleteLoan deletes the loan entry from the db
+// Route: DELETE /loan/:id
+func DeleteLoan(c *gin.Context) {
+	var loan models.Loan
+	if err := models.DB.Where("id = ?", c.Param("id")).First(&loan).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	models.DB.Delete(&loan)
+
+	c.JSON(http.StatusOK, gin.H{"data": true})
+}
