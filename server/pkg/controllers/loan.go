@@ -17,7 +17,7 @@ type CreateLoanInput struct {
 }
 
 // CreateLoan inputs a new loan into the database
-// Route: POST /loan
+// Route: POST /loans
 func CreateLoan(c *gin.Context) {
 
 	var input CreateLoanInput
