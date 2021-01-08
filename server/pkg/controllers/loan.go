@@ -16,6 +16,14 @@ type CreateLoanInput struct {
 	InterestRate float32 `json:"interest_rate" binding:"required"`
 }
 
+// A UpdateLoanInput respresents the input from the user to update an existing loan
+type UpdateLoanInput struct {
+	ID           uint    `json:"-"`
+	LoanName     string  `json:"loan_name"`
+	Debt         float32 `json:"debt"`
+	InterestRate float32 `json:"interest_rate"`
+}
+
 // CreateLoan inputs a new loan into the database
 // Route: POST /loans
 func CreateLoan(c *gin.Context) {
@@ -50,6 +58,26 @@ func FindLoan(c *gin.Context) { // Get model if exist
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
+
+	c.JSON(http.StatusOK, gin.H{"data": loan})
+}
+
+// UpdateLoan updates a loan by id. All fields are optional
+// Route: PUT /loans/:id
+func UpdateLoan(c *gin.Context) {
+	var loan models.Loan
+	if err := models.DB.Where("id = ?", c.Param("id")).First(&loan).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	var input UpdateLoanInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	models.DB.Model(&loan).Updates(input)
 
 	c.JSON(http.StatusOK, gin.H{"data": loan})
 }
