@@ -1,17 +1,14 @@
 package main
 
 import (
-	"net/http"
-
+	"../pkg/models"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"data": "hello world"})
-	})
+	models.ConnectDatabase()
 
 	r.Run()
 }
