@@ -6,6 +6,6 @@ package models
 type Loan struct {
 	ID           uint    `json:"id" gorm:"primaryKey"`
 	LoanName     string  `json:"loan_name"`
-	Debt         string  `json:"debt"`
+	Debt         float32 `json:"debt"`
 	InterestRate float32 `json:"interest_rate"`
 }
