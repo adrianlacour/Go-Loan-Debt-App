@@ -14,6 +14,7 @@ type CreateLoanInput struct {
 	LoanName     string  `json:"loan_name" binding:"required"`
 	Debt         float32 `json:"debt" binding:"required"`
 	InterestRate float32 `json:"interest_rate" binding:"required"`
+	MonthlyMin   float32 `json:"monthly_min_payment" binding:"required"`
 }
 
 // A UpdateLoanInput respresents the input from the user to update an existing loan
@@ -22,6 +23,7 @@ type UpdateLoanInput struct {
 	LoanName     string  `json:"loan_name"`
 	Debt         float32 `json:"debt"`
 	InterestRate float32 `json:"interest_rate"`
+	MonthlyMin   float32 `json:"monthly_min_payment"`
 }
 
 // CreateLoan inputs a new loan into the database
@@ -34,7 +36,7 @@ func CreateLoan(c *gin.Context) {
 		return
 	}
 
-	loan := models.Loan{LoanName: input.LoanName, Debt: input.Debt, InterestRate: input.InterestRate}
+	loan := models.Loan{LoanName: input.LoanName, Debt: input.Debt, InterestRate: input.InterestRate, MonthlyMin: input.MonthlyMin}
 	models.DB.Create(&loan)
 
 	c.JSON(http.StatusOK, gin.H{"data": loan})
@@ -51,7 +53,7 @@ func FindLoans(c *gin.Context) {
 
 // FindLoan connects to the database and retrieves a single loan, by id
 // Route: GET /loans/:id
-func FindLoan(c *gin.Context) { // Get model if exist
+func FindLoan(c *gin.Context) {
 	var loan models.Loan
 
 	if err := models.DB.Where("id = ?", c.Param("id")).First(&loan).Error; err != nil {
