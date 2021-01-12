@@ -15,9 +15,26 @@ func CalculateLoanStats(c *gin.Context) {
 	var loans []models.Loan
 	models.DB.Find(&loans)
 
+	if len(loans) == 0 {
+		c.JSON(http.StatusOK, gin.H{"data": nil})
+	}
+
+	var stats models.Stats
+	calcLoanLifeStates(&loans, &stats)
+
 	c.JSON(http.StatusOK, gin.H{"data": loans})
 }
 
-func calcTotalPrincipal(l *[]models.Loan) float32 {
-	return 12.2
+func calcLoanLifeStates(loans *[]models.Loan, stats *models.Stats) {
+	// TODO: Move all stats to using the model
+	stats.TotalPrincipal = 0.0
+	for i, l := range *loans {
+		stats.TotalPrincipal += l.Debt
+		stats.AvgInterestRate += (stats.AvgInterestRate + l.InterestRate) / float32(i)
+	}
+
+	calcPayoffDate(loans, stats)
+}
+
+func calcPayoffDate(loans *[]models.Loan, stats *models.Stats) {
 }
